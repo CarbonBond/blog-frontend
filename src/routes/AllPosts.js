@@ -1,4 +1,4 @@
-import React, { useState, useRef} from "react"
+import React, { useState, useRef, useEffect} from "react"
 import uniqid from 'uniqid';
 
 function SearchBar() {
@@ -16,8 +16,9 @@ function Post({ id }) {
     content: '',
     updated: null,
     created: null,
+    hasFetched: false,
   })
-  
+
   const postRef = useRef(null);
 
   const isInView = () => {
@@ -27,36 +28,37 @@ function Post({ id }) {
     return top <= windowEdge + offset
   }
 
-
-  let hasFetched = false;
   const fetchData = async () => {
-    if(!hasFetched) {
-      try {
-
-        let response = await fetch(`http://192.168.0.27:3000/api/v/1/public/post/${id}`);
-        let postData = await response.json();
-        hasFetched = true;
-        setPost({
+    try {
+      console.log('fetching...')
+      let response = await fetch(`http://192.168.0.27:3000/api/v/1/public/post/${id}`);
+      let postData = await response.json();
+        setPost( prevPost => {
+          return {
             title: postData.title,
             content: postData.content,
             updated: Date.parse(postData.updatedAt),
-            created: Date.parse(postData.createdAt)
-          })
-        
-      } catch(err) {
-        console.log(err)
-      }
+            created: Date.parse(postData.createdAt),
+            hasFetched: true
+          }
+        })
+      
+    } catch(err) {
+      console.log(err)
     }
   }
 
-  window.addEventListener('scroll', () => {
-    if(!hasFetched && isInView()) {
-      fetchData()
-    }
-  })
+  if(isInView && !post.hasFetched ) {
+    scrollHandler()
+  }
+  window.addEventListener('scroll', scrollHandler)
 
-  if(isInView && !hasFetched) {
-    fetchData()
+
+  function scrollHandler() {
+    if(isInView && !post.hasFetched ) {
+      fetchData()
+      window.removeEventListener('scroll', scrollHandler)
+    }
   }
 
   return (
@@ -66,6 +68,7 @@ function Post({ id }) {
       <div>
         <div>{post.created}</div>
         <div>{post.updated}</div>
+        <div>{post.hasFetched}</div>
       </div>
     </div>
   )
@@ -74,17 +77,43 @@ function Post({ id }) {
 }
 
 function Posts( props ) {
-  const  { posts } = props;
-  
-  if(!posts || posts.length === 0 ) return <p>Blog Posts Loading</p>
 
-  console.log(posts)
+  const [postList, setPostList] = useState({
+    loading: true,
+    posts: []
+  })
+  
+
+  async function fetchData() {
+    
+
+    try {
+      let response = await fetch('http://192.168.0.27:3000/api/v/1/public/post?limit=post_id');
+      let posts = await response.json();
+      setPostList({
+        loading: false,
+        posts: posts
+      });
+
+    } catch (err) {
+      console.error(err)
+    }
+  }
+  
+  if(postList.loading) {
+    fetchData()
+  }
+    
+  
+  if(!postList.posts|| postList.posts.length === 0 ) return <p>Blog Posts Loading</p>
+
+  console.log(postList.posts)
 
   return (
     <div className="postContainer">
       <SearchBar />
 
-      {posts.map( post => {
+      {postList.posts.map( post => {
         return (
           <Post  id={ post.post_id } key={ uniqid() } />
         )
