@@ -88,7 +88,7 @@ function Posts( props ) {
     
 
     try {
-      let response = await fetch('http://blog-api.brandonburge.com//api/v/1/public/post?limit=post_id');
+      let response = await fetch('http://blog-api.brandonburge.com/api/v/1/public/post?limit=post_id');
       let posts = await response.json();
       setPostList({
         loading: false,
