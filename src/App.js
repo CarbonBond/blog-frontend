@@ -35,7 +35,7 @@ function Post({ id }) {
     if(!hasFetched) {
       try {
 
-        let response = await fetch(`http://192.168.0.27:3000/api/v/1/public/post/${id}`);
+        let response = await fetch(`alog-api.brandonburge.com/api/v/1/public/post/${id}`);
         let postData = await response.json();
         hasFetched = true;
         setPost({
@@ -106,7 +106,7 @@ function App() {
       
 
       try {
-        let response = await fetch('http://192.168.0.27:3000/api/v/1/public/post?limit=post_id');
+        let response = await fetch('http://blog-api.brandonburge.com/api/v/1/public/post?limit=post_id');
         let posts = await response.json();
         setPostList({
           loading: false,
