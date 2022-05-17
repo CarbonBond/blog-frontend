@@ -1,0 +1,26 @@
+
+
+/* Top section of header that includes search bar */
+
+.header {
+  display: flex;
+  flex-direction: column;
+  color: lightgrey;
+}
+
+.upper {
+  display: flex;
+  justify-content: space-around;
+  align-items: center
+}
+
+.nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;  
+} 
+
+.nav > * {
+  margin: 10px;
+  color: lightgrey;
+}

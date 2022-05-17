@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react"
+import { Link } from 'react-router-dom'
 
 export default function Post({ id }) {
 
@@ -52,15 +53,14 @@ export default function Post({ id }) {
   }
 
   return (
-    <div className="post" ref={postRef}>
+    <Link to={`/post/${id}`} key={id} className="postList">
       <h3>{post.title}</h3>
       <p>{post.content}</p>
       <div>
         <div>{post.created}</div>
         <div>{post.updated}</div>
-        <div>{post.hasFetched}</div>
       </div>
-    </div>
+    </Link>
   )
 
 

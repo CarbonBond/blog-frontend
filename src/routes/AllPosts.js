@@ -1,11 +1,8 @@
 import React, { useState } from "react"
 import uniqid from 'uniqid';
 import Header from '../components/Header.js'
-import Post from '../components/Post.js'
-
-
-
-function PostConatiner() { }
+import Post from '../components/Posts.js'
+import '../css/allpost.css'
 
 function Posts() {
 
