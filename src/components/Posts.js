@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react"
 import { Link } from 'react-router-dom'
 
-export default function Post({ id }) {
+export default function Post({ id, user }) {
 
   const [post, setPost] = useState({
     title: '',
@@ -20,9 +20,18 @@ export default function Post({ id }) {
     return top <= windowEdge + offset
   }
 
-  const fetchData = async () => {
+  const fetchData = async (URL, token) => {
     try {
-      let response = await fetch(`http://blog-api.brandonburge.com/api/v/1/public/post/${id}`);
+      let response = await fetch(
+        URL,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        }
+      );
       let postData = await response.json();
       setPost(prevPost => {
         return {
@@ -46,10 +55,14 @@ export default function Post({ id }) {
 
 
   function scrollHandler() {
-    if (isInView && !post.hasFetched) {
-      fetchData()
-      window.removeEventListener('scroll', scrollHandler)
+    if (user) {
+      let parsedUser = JSON.parse(user);
+      fetchData(`http://blog-api.brandonburge.com/api/v/1/post/${id}`, parsedUser.token)
+    } else {
+      fetchData(`http://blog-api.brandonburge.com/api/v/1/public/post/${id}`, "")
     }
+
+    window.removeEventListener('scroll', scrollHandler)
   }
 
   return (

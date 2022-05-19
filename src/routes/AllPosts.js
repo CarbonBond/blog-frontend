@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import uniqid from 'uniqid';
 import Post from '../components/Posts.js'
 import '../css/allpost.css'
+import { useOutletContext } from 'react-router-dom'
 
 function Posts() {
 
@@ -10,16 +11,16 @@ function Posts() {
     posts: []
   })
 
-
-  async function fetchData(url) {
+  let user = useOutletContext()
+  async function fetchData(url, token = "") {
 
     try {
       let response = await fetch(url, {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('jwt_token')}`
-        },
+          'Authorization': `Bearer ${token}`
+        }
       })
       let posts = await response.json();
       setPostList({
@@ -33,8 +34,9 @@ function Posts() {
   }
 
   if (postList.loading) {
-    if (localStorage.getItem('jwt_toekn')) {
-      fetchData('http://blog-api.brandonburge.com/api/v/1/post?limit=post_id')
+    if (user) {
+      let parsedUser = JSON.parse(user)
+      fetchData('http://blog-api.brandonburge.com/api/v/1/post?limit=post_id', parsedUser.token)
     } else {
       fetchData('http://blog-api.brandonburge.com/api/v/1/public/post?limit=post_id')
     }
@@ -48,7 +50,7 @@ function Posts() {
         {
           postList.posts.map(post => {
             return (
-              <Post id={post.post_id} key={uniqid()} />
+              <Post id={post.post_id} key={uniqid()} user={user} />
             )
           })
         }

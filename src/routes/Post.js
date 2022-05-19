@@ -1,6 +1,6 @@
-import Header from '../components/Header.js';
 import { useParams } from "react-router-dom";
 import React, { useState } from "react"
+import { useOutletContext } from 'react-router-dom'
 
 export default function Post() {
 
@@ -12,12 +12,22 @@ export default function Post() {
     hasFetched: false,
   })
 
+  let user = useOutletContext();
 
   let params = useParams();
 
-  const fetchData = async () => {
+  const fetchData = async (url, token) => {
     try {
-      let response = await fetch(`http://blog-api.brandonburge.com/api/v/1/public/post/${params.postid}`);
+      let response = await fetch(
+        url,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        }
+      );
       let postData = await response.json();
       setPost(prevPost => {
         return {
@@ -35,7 +45,12 @@ export default function Post() {
   }
 
   if (!post.hasFetched) {
-    fetchData()
+    if (user) {
+      let parsedUser = JSON.parse(user);
+      fetchData(`http://blog-api.brandonburge.com/api/v/1/post/${params.postid}`, parsedUser.token)
+    } else {
+      fetchData(`http://blog-api.brandonburge.com/api/v/1/public/post/${params.postid}`)
+    }
     return <div>
       Loading: Post {params.postid}
     </div>
