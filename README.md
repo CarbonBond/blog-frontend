@@ -4,10 +4,12 @@ A blog that I can login to create blog posts and send them, along with authentic
 
 ## Technologies
 
-REST Api: Connects to blog-backend (Another repo I have), to fetch information.
-React: A frontend framework for building apps
-- React Router: An extension to react that allows for url routing.
+- REST Api: Connects to blog-backend (Another repo I have), to fetch information.
 
-JWT Authentication: Authenticates the user using json web tokens.
+- React: A frontend framework for building apps
+- - React Router: An extension to react that allows for url routing.
 
+- JWT Authentication: Authenticates the user using json web tokens.
+- Docker: composed into a container for easy deployment
+- Nginx: Hosted through an Nginx reverse proxy that points to the docker container
 
