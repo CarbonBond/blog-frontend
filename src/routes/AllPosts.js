@@ -1,6 +1,5 @@
 import React, { useState } from "react"
 import uniqid from 'uniqid';
-import Header from '../components/Header.js'
 import Post from '../components/Posts.js'
 import '../css/allpost.css'
 
@@ -12,11 +11,16 @@ function Posts() {
   })
 
 
-  async function fetchData() {
-
+  async function fetchData(url) {
 
     try {
-      let response = await fetch('http://blog-api.brandonburge.com/api/v/1/public/post?limit=post_id');
+      let response = await fetch(url, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('jwt_token')}`
+        },
+      })
       let posts = await response.json();
       setPostList({
         loading: false,
@@ -29,27 +33,25 @@ function Posts() {
   }
 
   if (postList.loading) {
-    fetchData()
+    if (localStorage.getItem('jwt_toekn')) {
+      fetchData('http://blog-api.brandonburge.com/api/v/1/post?limit=post_id')
+    } else {
+      fetchData('http://blog-api.brandonburge.com/api/v/1/public/post?limit=post_id')
+    }
   }
 
   if (!postList.posts || postList.posts.length === 0) {
-    return <div>
-      <Header />
-      <p>Blog Post Loading</p>
-    </div>
+    return <p>Blog Post Loading</p>
   } else {
     return (
-      <div>
-        <Header />
-        <div className="postContainer">
-          {
-            postList.posts.map(post => {
-              return (
-                <Post id={post.post_id} key={uniqid()} />
-              )
-            })
-          }
-        </div>
+      <div className="postContainer">
+        {
+          postList.posts.map(post => {
+            return (
+              <Post id={post.post_id} key={uniqid()} />
+            )
+          })
+        }
       </div>
     )
   }

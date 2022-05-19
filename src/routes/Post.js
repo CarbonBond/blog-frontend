@@ -37,13 +37,11 @@ export default function Post() {
   if (!post.hasFetched) {
     fetchData()
     return <div>
-      <Header />
       Loading: Post {params.postid}
     </div>
   } else {
     return (
       <div>
-        <Header />
         <section>
           <h3>{post.title}</h3>
           <p>{post.content}</p>

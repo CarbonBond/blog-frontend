@@ -1,10 +1,13 @@
-import Header from '../components/Header.js'
 import React, { useState } from "react";
+import { useOutletContext, Navigate } from 'react-router-dom'
 
 export default function Login() {
 
   const [nameValue, setNameValue] = useState('');
   const [passValue, setPassValue] = useState('');
+
+  const user = useOutletContext();
+
 
   let handleSubmit = (event) => {
     event.preventDefault();
@@ -22,10 +25,20 @@ export default function Login() {
           })
         })
         let data = await response.json();
+
         if (response.status !== 200) {
           alert(data.info.message)
+          return;
         }
-        console.log(data)
+
+        const user = {
+          token: data.token,
+          name: data.user.name,
+          id: data.user.user_id,
+          email: data.user.email
+        }
+        localStorage.setItem('user', JSON.stringify(user))
+        window.location.reload(false);
       } catch (err) {
         console.log(err)
       }
@@ -42,9 +55,12 @@ export default function Login() {
     setPassValue(event.target.value)
   }
 
+  if (user) {
+
+    return (<Navigate to="/" replace="true" />)
+  }
   return (
     <div>
-      <Header />
       <form onSubmit={handleSubmit}>
         <label>
           Username:
