@@ -5,9 +5,10 @@ export default function Post({ id, user }) {
 
   const [post, setPost] = useState({
     title: '',
+    name: '',
     content: '',
-    updated: null,
-    created: null,
+    updated: new Date(),
+    created: new Date(),
     hasFetched: false,
   })
 
@@ -21,6 +22,7 @@ export default function Post({ id, user }) {
   }
 
   const fetchData = async (URL, token) => {
+    if (post.hasFetched) return;
     try {
       let response = await fetch(
         URL,
@@ -33,12 +35,17 @@ export default function Post({ id, user }) {
         }
       );
       let postData = await response.json();
-      setPost(prevPost => {
+      let updated = new Date(postData.updatedAt);
+      let created = new Date(postData.createdAt);
+
+      setPost(() => {
+        console.log(postData)
         return {
           title: postData.title,
+          name: postData.name,
           content: postData.content,
-          updated: Date.parse(postData.updatedAt),
-          created: Date.parse(postData.createdAt),
+          updated: updated,
+          created: created,
           hasFetched: true
         }
       })
@@ -68,10 +75,11 @@ export default function Post({ id, user }) {
   return (
     <Link to={`/post/${id}`} key={id} className="postList">
       <h3>{post.title}</h3>
-      <p>{post.content}</p>
-      <div>
-        <div>{post.created}</div>
-        <div>{post.updated}</div>
+      <p>{post.content.substring(0, 150) + '...'}</p>
+      <div className="info">
+        <div>Brandon Burge</div>
+        <div>{post.created.toDateString()}</div>
+        <div>{post.updated.toDateString()}</div>
       </div>
     </Link>
   )
