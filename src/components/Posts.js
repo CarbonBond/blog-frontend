@@ -74,12 +74,15 @@ export default function Post({ id, user }) {
 
   return (
     <Link to={`/post/${id}`} key={id} className="postList">
-      <h3>{post.title}</h3>
-      <p>{post.content.substring(0, 150) + '...'}</p>
-      <div className="info">
-        <div>Brandon Burge</div>
-        <div>{post.created.toDateString()}</div>
-        <div>{post.updated.toDateString()}</div>
+      <div className="post">
+        <div className="postHeader">
+          <h2>{post.title}</h2>
+          <div className="info">
+            <div>By Brandon Burge on {post.created.toDateString()} </div>
+          </div>
+        </div>
+        <p>{post.content.substring(0, 150) + '...'}</p>
+
       </div>
     </Link>
   )
