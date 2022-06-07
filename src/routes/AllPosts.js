@@ -36,9 +36,9 @@ function Posts() {
   if (postList.loading) {
     if (user) {
       let parsedUser = JSON.parse(user)
-      fetchData('http://blog-api.brandonburge.com/api/v/1/post?limit=post_id', parsedUser.token)
+      fetchData('https://blog-api.brandonburge.com/api/v/1/post?limit=post_id', parsedUser.token)
     } else {
-      fetchData('http://blog-api.brandonburge.com/api/v/1/public/post?limit=post_id')
+      fetchData('https://blog-api.brandonburge.com/api/v/1/public/post?limit=post_id')
     }
   }
 

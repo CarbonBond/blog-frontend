@@ -19,7 +19,7 @@ export default function Header(props) {
       <nav className="nav">
         <Link to="/">Home</Link>
         <Link to="/posts">All Posts</Link>
-        <a href="http://brandonburge.com" >BrandonBurge.com</a>
+        <a href="https://brandonburge.com" >BrandonBurge.com</a>
       </nav>
 
     </div>

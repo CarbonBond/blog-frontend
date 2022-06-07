@@ -64,9 +64,9 @@ export default function Post({ id, user }) {
   function scrollHandler() {
     if (user) {
       let parsedUser = JSON.parse(user);
-      fetchData(`http://blog-api.brandonburge.com/api/v/1/post/${id}`, parsedUser.token)
+      fetchData(`https://blog-api.brandonburge.com/api/v/1/post/${id}`, parsedUser.token)
     } else {
-      fetchData(`http://blog-api.brandonburge.com/api/v/1/public/post/${id}`, "")
+      fetchData(`https://blog-api.brandonburge.com/api/v/1/public/post/${id}`, "")
     }
 
     window.removeEventListener('scroll', scrollHandler)

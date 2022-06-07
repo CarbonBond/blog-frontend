@@ -47,9 +47,9 @@ export default function Post() {
   if (!post.hasFetched) {
     if (user) {
       let parsedUser = JSON.parse(user);
-      fetchData(`http://blog-api.brandonburge.com/api/v/1/post/${params.postid}`, parsedUser.token)
+      fetchData(`https://blog-api.brandonburge.com/api/v/1/post/${params.postid}`, parsedUser.token)
     } else {
-      fetchData(`http://blog-api.brandonburge.com/api/v/1/public/post/${params.postid}`)
+      fetchData(`https://blog-api.brandonburge.com/api/v/1/public/post/${params.postid}`)
     }
     return <div>
       Loading: Post {params.postid}

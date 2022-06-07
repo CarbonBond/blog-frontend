@@ -14,7 +14,7 @@ export default function Login() {
 
     const fetchData = async () => {
       try {
-        let response = await fetch('http://blog-api.brandonburge.com/auth/login', {
+        let response = await fetch('https://blog-api.brandonburge.com/auth/login', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
