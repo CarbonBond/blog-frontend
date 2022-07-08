@@ -1,0 +1,18 @@
+h3 {
+  font-size: 40px;
+  border-bottom: var(--light-purple) 2px solid;
+
+} 
+
+.content{
+  margin: 10px;
+  max-width: 70ch;
+}
+
+.dates{
+  display: flex;
+}
+.dates>* {
+  margin: 10px;
+  font-size: 14px;
+}

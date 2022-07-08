@@ -9,7 +9,7 @@ export default function Header(props) {
     <div className="header">
       <div className='upper'>
         <h1> Brandon's Blog </h1>
-        <SearchBar />
+        {/* <SearchBar /> */}
         {props.user ? (
           <User />
         ) : (
