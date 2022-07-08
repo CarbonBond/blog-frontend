@@ -10,6 +10,7 @@ export default function User() {
 
   return (
     <div>
+      <button><a href="/post/create">Create</a></button>
       <button onClick={logout}> Logout </button>
     </div>
   )

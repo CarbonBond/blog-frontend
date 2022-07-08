@@ -19,7 +19,7 @@ root.render(
         <Route exact path="/" element={<App />} >
           <Route path="login" element={<Login />} />
           <Route path="posts" element={<Posts />} />
-          <Route path="post/CreatePost" element={<CreatePost />} />
+          <Route path="post/create" element={<CreatePost />} />
           <Route path="post/:postid" element={<Post />} />
           <Route path="*" element={<NotFound />} />
         </Route>
