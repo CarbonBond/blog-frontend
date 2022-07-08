@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import uniqid from 'uniqid';
-import Post from '../components/Posts.js'
-import '../css/allpost.css'
+import Post from '../../components/Posts.js'
+import '../../css/allpost.css'
 import { useOutletContext } from 'react-router-dom'
 
 function Posts() {
