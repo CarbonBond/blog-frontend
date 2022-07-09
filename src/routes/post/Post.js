@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom'
 import React, { useState } from 'react'
-import { useOutletContext } from 'react-router-dom'
+import { useOutletContext, useNavigate } from 'react-router-dom'
 import '../../css/post.css'
 
 const parse = require('html-react-parser')
@@ -15,8 +15,29 @@ export default function Post() {
   })
 
   let user = useOutletContext()
-
+  let parsedUser = JSON.parse(user)
   let params = useParams()
+  const navigate = useNavigate()
+
+  const deletePost = async (e) => {
+    e.preventDefault()
+    try {
+      let response = await fetch(
+        `https://blog-api.brandonburge.com/api/v/1/post/${params.postid}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+            Authorization: `Bearer ${parsedUser.token}`,
+          },
+        }
+      );
+      navigate(`/posts`)
+    } catch (err) {
+      console.log(err)
+    }
+  }
 
   const fetchData = async (url, token) => {
     try {
@@ -76,6 +97,9 @@ export default function Post() {
             <div>Created: {post.created.toDateString()}</div>
             <div>Updated: {post.updated.toDateString()}</div>
             <a href={`${params.postid}/edit`}>edit</a>
+            <a href='/' onClick={deletePost}>
+              delete
+            </a>
           </div>
 
           <div className='content'>{parse(post.content)}</div>
