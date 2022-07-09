@@ -2,7 +2,8 @@ import { useParams } from 'react-router-dom'
 import React, { useState } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import '../../css/post.css'
-const parse = require('html-react-parser');
+
+const parse = require('html-react-parser')
 
 export default function Post() {
   const [post, setPost] = useState({
@@ -56,12 +57,39 @@ export default function Post() {
         `https://blog-api.brandonburge.com/api/v/1/public/post/${params.postid}`
       )
     }
-    return <div>Loading: Post {params.postid}</div>
+    return (
+      <section className='postContainer'>
+        <div>Loading: Post {params.postid}</div>
+      </section>
+    )
+  }
+
+  if (user) {
+    return (
+      <div>
+        <section className='postContainer'>
+          <div>
+            <h3>{post.title}</h3>
+          </div>
+
+          <div className='dates'>
+            <div>Created: {post.created.toDateString()}</div>
+            <div>Updated: {post.updated.toDateString()}</div>
+            <a href={`${params.postid}/edit`}>edit</a>
+          </div>
+
+          <div className='content'>{parse(post.content)}</div>
+        </section>
+      </div>
+    )
   } else {
     return (
       <div>
         <section className='postContainer'>
-          <h3>{post.title}</h3>
+          <div>
+            <h3>{post.title}</h3>
+          </div>
+
           <div className='dates'>
             <div>Created: {post.created.toDateString()}</div>
             <div>Updated: {post.updated.toDateString()}</div>

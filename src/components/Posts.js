@@ -1,6 +1,8 @@
 import React, { useState, useRef } from "react"
 import { Link } from 'react-router-dom'
 
+const parse = require('html-react-parser');
+
 export default function Post({ id, user }) {
 
   const [post, setPost] = useState({
@@ -81,11 +83,10 @@ export default function Post({ id, user }) {
             <div>By Brandon Burge on {post.created.toDateString()} </div>
           </div>
         </div>
-        <p>{post.content.substring(0, 150) + '...'}</p>
-
+          
+        <div className="content">{parse(post.content.substring(0, 150) + '...')}</div>
+        
       </div>
     </Link>
   )
-
-
 }

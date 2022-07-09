@@ -8,6 +8,9 @@
   color: lightgrey;
   padding: 1rem;
 }
+h1 {
+  font-size: 40px;
+}
 
 .upper {
   display: flex;
