@@ -1,4 +1,5 @@
 import { useParams } from 'react-router-dom'
+import EditArea from '../../components/EditArea'
 import React, { useState } from 'react'
 import { useOutletContext, useNavigate } from 'react-router-dom'
 
@@ -15,8 +16,8 @@ export default function CreatePost() {
   let user = useOutletContext()
 
   let params = useParams()
-  const navigate = useNavigate();
-   
+  const navigate = useNavigate()
+
   if (user && post.userHook) {
     let parsedUser = JSON.parse(user)
     setPost((oldPost) => {
@@ -27,7 +28,7 @@ export default function CreatePost() {
       }
     })
   }
-  
+
   const postData = async (e) => {
     e.preventDefault()
     try {
@@ -36,7 +37,7 @@ export default function CreatePost() {
         title: post.title,
         content: post.content,
         published: post.published,
-        updated: new Date().now(),
+        updated: new Date(),
         category: [],
       }
       let response = await fetch(
@@ -57,7 +58,6 @@ export default function CreatePost() {
       console.log(err)
     }
   }
-
 
   const fetchData = async (url, token) => {
     try {
@@ -92,62 +92,5 @@ export default function CreatePost() {
     )
   }
 
-  let pub = <div></div>
-  if (post.published) {
-    pub = <div> True </div>
-  } else {
-    pub = <div> False </div>
-  }
-
-  if (user && post.hasFetched) {
-    return (
-      <div>
-        <form onSubmit={postData}>
-          <label>
-            Title
-            <input
-              type='text'
-              id='title'
-              name='title'
-              onChange={(e) => setPost({ ...post, title: e.target.value })}
-              value={post.title}
-            />
-          </label>
-          <br />
-          <label>
-            Content
-            <textarea
-              id='content'
-              name='content'
-              onChange={(e) => setPost({ ...post, content: e.target.value })}
-              value={post.content}
-            />
-          </label>
-          <br />
-          <label>
-            published
-            <input
-              type='checkbox'
-              id='published'
-              name='published'
-              value='true'
-              onChange={(e) =>
-                setPost((oldpost) => {
-                  let isPublished = false
-                  if (e.target.checked) {
-                    isPublished = true
-                  }
-                  return { ...post, published: isPublished }
-                })
-              }
-            />
-          </label>
-          <br />
-          <input type='submit' value='submit' />
-        </form>
-      </div>
-    )
-  } else {
-    return <div>Loading</div>
-  }
+  return <EditArea />
 }
