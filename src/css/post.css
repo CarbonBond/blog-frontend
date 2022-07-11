@@ -6,6 +6,7 @@ h3 {
 .content{
   margin: 10px;
   max-width: 70ch;
+  white-space: pre-wrap;
 }
 
 .dates{
@@ -15,3 +16,5 @@ h3 {
   margin: 10px;
   font-size: 14px;
 }
+
+
