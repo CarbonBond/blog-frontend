@@ -5,15 +5,16 @@ export default function Login() {
 
   const [nameValue, setNameValue] = useState('');
   const [passValue, setPassValue] = useState('');
+  const [hasFetched, setHasFetched] = useState(false);
 
-  const user = useOutletContext();
-
+  const cache = useOutletContext();
 
   let handleSubmit = (event) => {
     event.preventDefault();
 
     const fetchData = async () => {
       try {
+        if(hasFetched) return;
         let response = await fetch('https://blog-api.brandonburge.com/auth/login', {
           method: 'POST',
           headers: {
@@ -37,6 +38,7 @@ export default function Login() {
           id: data.user.user_id,
           email: data.user.email
         }
+        setHasFetched(true);
         localStorage.setItem('user', JSON.stringify(user))
         window.location.reload(false);
       } catch (err) {
@@ -55,8 +57,7 @@ export default function Login() {
     setPassValue(event.target.value)
   }
 
-  if (user) {
-
+  if (cache && cache.user) {
     return (<Navigate to="/" replace="true" />)
   }
   return (

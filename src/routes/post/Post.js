@@ -6,23 +6,44 @@ import '../../css/post.css'
 const parse = require('html-react-parser')
 
 export default function Post() {
+  
+  const cache = useOutletContext();
+  const user = cache.user;
+  const posts = cache.posts;
+  let params = useParams()
+
   const [post, setPost] = useState({
     title: '',
     content: '',
     updated: null,
     created: null,
     hasFetched: false,
+    ...posts[params.postid]
   })
 
-  let user = useOutletContext()
   let parsedUser = JSON.parse(user)
-  let params = useParams()
   const navigate = useNavigate()
+
+  if (posts && posts[params.postid] && !post.hasFetched) {
+    let updated = new Date(post[params.postid].updatedAt);
+    let created = new Date(post[params.postid].createdAt);
+    setPost(() => {
+      return {
+        title: posts[params.postid].title,
+        name: posts[params.postid].name,
+        content: posts[params.postid].content,
+        updated: updated,
+        created: created,
+        hasFetched: true
+      }
+    })
+    return;
+  }
 
   const deletePost = async (e) => {
     e.preventDefault()
     try {
-      let response = await fetch(
+      await fetch(
         `https://blog-api.brandonburge.com/api/v/1/post/${params.postid}`,
         {
           method: 'DELETE',
@@ -41,6 +62,7 @@ export default function Post() {
 
   const fetchData = async (url, token) => {
     try {
+
       let response = await fetch(url, {
         headers: {
           'Content-Type': 'application/json',
@@ -52,7 +74,7 @@ export default function Post() {
       let updated = new Date(postData.updatedAt)
       let created = new Date(postData.createdAt)
 
-      setPost((prevPost) => {
+      setPost(() => {
         return {
           title: postData.title,
           content: postData.content,
@@ -60,6 +82,18 @@ export default function Post() {
           created: created,
           hasFetched: true,
         }
+      })
+
+      localStorage.setItem('posts', {
+        [params.postid]: {
+          title: postData.title,
+          name: postData.name,
+          content: postData.content,
+          updated: updated,
+          created: created,
+          hasFetched: true
+        },
+        ...posts
       })
     } catch (err) {
       console.log(err)

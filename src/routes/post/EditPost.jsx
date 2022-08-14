@@ -13,7 +13,8 @@ export default function CreatePost() {
     token: null,
   })
 
-  let user = useOutletContext()
+  const cache = useOutletContext();
+  const user = cache.user;
 
   let params = useParams()
   const navigate = useNavigate()

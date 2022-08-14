@@ -5,7 +5,7 @@ import './css/app.css'
 import Header from './components/Header.js'
 
 function App() {
-  const [user, setUser] = useState(localStorage.getItem('user'))
+  const [cache, setCache] = useState({user: localStorage.getItem('user'), posts: localStorage.getItem('posts')})
 
   const mapDispatchToProps = async () => {
     let foundUser = localStorage.getItem('user')
@@ -13,8 +13,15 @@ function App() {
       return;
     }
 
-    if (typeof user === {}) {
-      setUser(JSON.parse(foundUser))
+    let foundPosts = localStorage.getItem('posts')
+    if (!foundPosts || foundPosts === '') {
+      return;
+    }
+    if(typeof foundUser === {} && typeof foundUser === {}) {
+      let user = JSON.parse(foundUser);
+      let posts = JSON.parse(foundPosts);
+
+    setCache({user: user,  posts: posts} )  
     }
   }
 
@@ -22,8 +29,8 @@ function App() {
   return (
 
     <div className="App">
-      <Header user={user} />
-      <Outlet context={user} />
+      <Header user={cache.user} />
+      <Outlet context={cache} />
     </div>
   );
 }

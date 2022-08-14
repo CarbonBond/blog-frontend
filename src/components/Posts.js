@@ -3,7 +3,10 @@ import { Link } from 'react-router-dom'
 
 const parse = require('html-react-parser');
 
-export default function Post({ id, user }) {
+export default function Post({ id, cache }) {
+
+  let user = cache.user;
+  let posts = cache.posts;
 
   const [post, setPost] = useState({
     title: '',
@@ -12,9 +15,25 @@ export default function Post({ id, user }) {
     updated: new Date(),
     created: new Date(),
     hasFetched: false,
+    ...posts[id]
   })
 
   const postRef = useRef(null);
+
+  if (posts && posts[id] && !post.hasFetched) {
+    let updated = new Date(post[id].updatedAt);
+    let created = new Date(post[id].createdAt);
+    setPost(() => {
+      return {
+        title: posts[id].title,
+        name: posts[id].name,
+        content: posts[id].content,
+        updated: updated,
+        created: created,
+        hasFetched: true
+      }
+    })
+  }
 
   const isInView = () => {
     const top = postRef.current.getBoundingClientRect().top;
@@ -40,6 +59,17 @@ export default function Post({ id, user }) {
       let updated = new Date(postData.updatedAt);
       let created = new Date(postData.createdAt);
 
+      localStorage.setItem('posts', {
+        [id]: {
+          title: postData.title,
+          name: postData.name,
+          content: postData.content,
+          updated: updated,
+          created: created,
+          hasFetched: true
+        },
+        ...posts
+      })
       setPost(() => {
         console.log(postData)
         return {
@@ -83,9 +113,9 @@ export default function Post({ id, user }) {
             <div>By Brandon Burge on {post.created.toDateString()} </div>
           </div>
         </div>
-          
+
         <div className="content">{parse(post.content.substring(0, 150) + '...')}</div>
-        
+
       </div>
     </Link>
   )

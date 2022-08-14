@@ -4,7 +4,8 @@ import EditArea from '../../components/EditArea.jsx'
 
 export default function CreatePost() {
 
-  let user = useOutletContext()
+  const cache = useOutletContext();
+  const user = cache.user;
 
   if (user) {
     return (

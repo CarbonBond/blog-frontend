@@ -15,7 +15,8 @@ export default function EditArea() {
 
   const navigate = useNavigate()
 
-  let user = useOutletContext()
+  const cache = useOutletContext();
+  const user = cache.user;
 
   let params = useParams()
 

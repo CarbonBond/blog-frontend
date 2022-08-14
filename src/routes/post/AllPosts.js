@@ -11,7 +11,8 @@ function Posts() {
     posts: []
   })
 
-  let user = useOutletContext()
+  let cache = useOutletContext()
+  let user = cache.user;
   async function fetchData(url, token = "") {
 
     try {
@@ -25,7 +26,7 @@ function Posts() {
       let posts = await response.json();
       setPostList({
         loading: false,
-        posts: posts
+        posts: posts.reverse()
       });
 
     } catch (err) {
@@ -43,14 +44,18 @@ function Posts() {
   }
 
   if (!postList.posts || postList.posts.length === 0) {
-    return <p>Blog Post Loading</p>
+    return (
+      <div className="postContainer">
+        <p>Blog Post Loading</p>
+      </div>
+    )
   } else {
     return (
       <div className="postContainer">
         {
           postList.posts.map(post => {
             return (
-              <Post id={post.post_id} key={uniqid()} user={user} />
+              <Post id={post.post_id} key={uniqid()} cache={cache} />
             )
           })
         }
