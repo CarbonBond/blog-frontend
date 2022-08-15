@@ -1,44 +1,83 @@
 import { useParams } from 'react-router-dom'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useOutletContext, useNavigate } from 'react-router-dom'
 import '../../css/post.css'
 
 const parse = require('html-react-parser')
 
 export default function Post() {
-  
-  const cache = useOutletContext();
-  const user = cache.user;
-  const posts = cache.posts;
+  const cache = useOutletContext()
+  const user = cache.user
+  const posts = cache.posts
   let params = useParams()
+  let postsObj = JSON.parse(posts)
 
   const [post, setPost] = useState({
     title: '',
+    name: '',
     content: '',
     updated: null,
     created: null,
-    hasFetched: false,
-    ...posts[params.postid]
   })
 
+  useEffect(() => {
+    const fetchData = async (url, token) => {
+      try {
+        let response = await fetch(url, {
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        let postData = await response.json()
+        let updated = new Date(postData.updatedAt)
+        let created = new Date(postData.createdAt)
+
+        setPost(() => {
+          return {
+            title: postData.title,
+            name: postData.name,
+            content: postData.content,
+            updated: updated,
+            created: created,
+          }
+        })
+        return {
+          title: postData.title,
+          name: postData.name,
+          content: postData.content,
+          updated: updated,
+          created: created,
+        }
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    let data
+
+    if (user) {
+      let parsedUser = JSON.parse(user)
+      data = fetchData(
+        `https://blog-api.brandonburge.com/api/v/1/post/${params.postid}`,
+        parsedUser.token
+      )
+    } else {
+      data = fetchData(
+        `https://blog-api.brandonburge.com/api/v/1/public/post/${params.postid}`
+      )
+    }
+
+    data.then((value) => {
+      let obj = {
+        [params.postid]: value,
+      }
+      obj = Object.assign(obj, JSON.parse(posts))
+      localStorage.setItem('posts', JSON.stringify(obj))
+    })
+  }, [posts, user, params.postid])
   let parsedUser = JSON.parse(user)
   const navigate = useNavigate()
-
-  if (posts && posts[params.postid] && !post.hasFetched) {
-    let updated = new Date(post[params.postid].updatedAt);
-    let created = new Date(post[params.postid].createdAt);
-    setPost(() => {
-      return {
-        title: posts[params.postid].title,
-        name: posts[params.postid].name,
-        content: posts[params.postid].content,
-        updated: updated,
-        created: created,
-        hasFetched: true
-      }
-    })
-    return;
-  }
 
   const deletePost = async (e) => {
     e.preventDefault()
@@ -53,69 +92,37 @@ export default function Post() {
             Authorization: `Bearer ${parsedUser.token}`,
           },
         }
-      );
+      )
       navigate(`/posts`)
     } catch (err) {
       console.log(err)
     }
   }
 
-  const fetchData = async (url, token) => {
-    try {
+  if (!post.updated && postsObj && postsObj[params.postid]) {
+    return (
+      <div>
+        <section className='postContainer'>
+          <div>
+            <h3>{postsObj[params.postid].title}</h3>
+          </div>
 
-      let response = await fetch(url, {
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      let postData = await response.json()
-      let updated = new Date(postData.updatedAt)
-      let created = new Date(postData.createdAt)
+          <div className='dates'>
+            <div>Created: {new Date(postsObj[params.postid].created).toDateString()}</div>
+            <div>Updated: {new Date(postsObj[params.postid].updated).toDateString()}</div>
+          </div>
 
-      setPost(() => {
-        return {
-          title: postData.title,
-          content: postData.content,
-          updated: updated,
-          created: created,
-          hasFetched: true,
-        }
-      })
-
-      localStorage.setItem('posts', {
-        [params.postid]: {
-          title: postData.title,
-          name: postData.name,
-          content: postData.content,
-          updated: updated,
-          created: created,
-          hasFetched: true
-        },
-        ...posts
-      })
-    } catch (err) {
-      console.log(err)
-    }
+          <div className='content'>{parse(postsObj[params.postid].content)}</div>
+        </section>
+      </div>
+    )
   }
 
-  if (!post.hasFetched) {
-    if (user) {
-      let parsedUser = JSON.parse(user)
-      fetchData(
-        `https://blog-api.brandonburge.com/api/v/1/post/${params.postid}`,
-        parsedUser.token
-      )
-    } else {
-      fetchData(
-        `https://blog-api.brandonburge.com/api/v/1/public/post/${params.postid}`
-      )
-    }
+  if (!post.updated) {
     return (
-      <section className='postContainer'>
-        <div>Loading: Post {params.postid}</div>
-      </section>
+      <div>
+        <section className='postContainer'>Posts Loading...</section>
+      </div>
     )
   }
 
