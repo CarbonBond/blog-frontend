@@ -12,7 +12,10 @@ function Posts() {
 
   let cache = useOutletContext()
   let user = cache.user
-  let posts = JSON.parse(cache.posts)
+  let posts = null;
+  if (cache.posts) {
+    posts = JSON.parse(cache.posts)
+  }
 
   useEffect(() => {
     async function fetchData(url, token = '') {
