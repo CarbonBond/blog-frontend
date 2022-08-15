@@ -66,7 +66,7 @@ export default function Post({ id, cache }) {
           content: postData.content,
           updated: updated,
           created: created,
-          hasFetched: true
+          hasFetched: true,
         },
         ...posts
       })
